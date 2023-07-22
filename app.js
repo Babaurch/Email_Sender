@@ -1,10 +1,12 @@
 import express from "express";
 import config from "./config/config.js";
 import bodyParser from "body-parser";
-import nodemailer from "nodemailer";
+import { transporter } from "./config/api.js";
+
 
 
 const PORT = config.PORT
+transporter();
 const app = express();
 
 app.set("view engine", "ejs");
@@ -23,7 +25,17 @@ app.post("/login", (req, res, next) =>{
     console.log(req.body.confirmPassword);
 
     res.redirect("/");
-})
+
+    transporter.sendMail({
+        to: req.body.email,
+        from: "madukwes@yahoo.com",
+        subject: "SignUp Successfully",
+        html: "<h1>You have Successfully Registered! </h1>"
+    })
+
+   
+ 
+});
 
 app.listen(PORT, () => {
     console.log(`⚡️[server] server started @ http://localhost:${PORT}`) 
